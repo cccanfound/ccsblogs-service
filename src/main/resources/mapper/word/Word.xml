@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.word.dao.word.WordDao">
+
+    <select id="selectWordList" parameterType="map" resultType="map">
+        SELECT user.id id,word_id,content,phonetic,announce,wordtype,explaination
+        FROM user_word user
+        LEFT JOIN word on user.word_id=word.id
+        WHERE user.user_id = #{user_id}
+        and user.state = #{type}
+        ORDER BY user.word_id
+    </select>
+
+    <insert id="addWords" parameterType="map">
+        INSERT INTO user_word
+        (user_id, word_id, state)
+        SELECT  #{user_id}, id, 0
+        FROM word
+        WHERE id &gt; (SELECT IFNULL((SELECT MAX(word_id) FROM user_word WHERE user_id=#{user_id}),0) AS word_id)
+        AND id &lt;= (SELECT IFNULL((SELECT MAX(word_id) FROM user_word WHERE user_id=#{user_id}),0) AS word_id)+#{number}
+    </insert>
+
+    <update id="changeWordState" parameterType="map">
+        update user_word set state = #{state} where id = #{id}
+    </update>
+
+    <select id="searchWords" parameterType="map" resultType="map">
+        SELECT id,content word,phonetic,wordtype,explaination
+        FROM word
+        where  id=#{info}
+        /*WHERE content like '%${info}%'
+        or explaination like '%${info}%'*/
+        ORDER BY id
+    </select>
+
+    <select id="searchWordById" parameterType="map" resultType="map">
+        SELECT id,content word,phonetic,wordtype,explaination
+        FROM word
+        WHERE id =  #{id}
+    </select>
+
+    <select id="searchSentence" parameterType="map" resultType="map">
+        SELECT id,word_id,english,chinese
+        FROM sentence
+        WHERE word_id =  #{id}
+    </select>
+
+    <update id="updateWord" parameterType="Map">
+        UPDATE word set
+        content=#{word},
+        explaination=#{explaination},
+        phonetic=#{phonetic},
+        wordtype=#{wordtype},
+        user=#{user}
+        WHERE id=#{id}
+    </update>
+
+    <insert id="insertSentence" parameterType="Map">
+        INSERT INTO sentence(
+        word_id,
+        english,
+        chinese,
+        user
+        )VALUES(
+        #{id,jdbcType=INTEGER},
+        #{english,jdbcType=VARCHAR},
+        #{chinese,jdbcType=VARCHAR},
+        #{user,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteSection" parameterType="map">
+        delete from sentence
+        where word_id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <select id="searchSentenceById" parameterType="map" resultType="map">
+        SELECT english,chinese
+        FROM sentence
+        WHERE word_id = #{id}
+    </select>
+
+    <select id="selectMemorizeCount" parameterType="map" resultType="INTEGER">
+        SELECT id
+        FROM user_word
+        WHERE user_id = #{user_id}
+        and state = 2
+    </select>
+
+    <select id="selectRandomList" parameterType="map" resultType="map">
+        SELECT user.id id,word_id,content,phonetic,announce,wordtype,explaination
+        FROM user_word user
+        LEFT JOIN word on user.word_id=word.id
+        WHERE user.state = 2
+        and user.id IN
+        <foreach collection="userWordIdList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+</mapper>

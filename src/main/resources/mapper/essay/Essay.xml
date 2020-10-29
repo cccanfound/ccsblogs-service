@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cc.word.dao.essay.EssayDao">
+    <insert id="saveEssay" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO essay(TITLE,AUTHOR_ID,CONTENT,CREATE_TIME,TYPE)
+        VALUES (#{title},#{authorId},#{content},#{createTime},#{type})
+    </insert>
+
+    <select id="essayList" parameterType="java.lang.Integer" resultType="com.cc.word.model.essay.Essay" >
+        select * from essay where id = #{essay_id}
+    </select>
+
+    <select id="selectUserEssayCatalog" parameterType="java.lang.Integer" resultType="String">
+        select essay_catalog from user where id = #{user_id}
+    </select>
+
+    <update id="updateCatalog" >
+        UPDATE user
+		SET
+		essay_catalog = #{catalog}
+		where id = #{user_id}
+    </update>
+
+    <update id="updateEssay" >
+        UPDATE essay
+		SET
+		TITLE = #{title},
+		CONTENT = #{content},
+		TYPE = #{type}
+		where id = #{id}
+    </update>
+
+    <delete id="delEssay" parameterType="Map">
+		delete from essay where id=#{id}
+	</delete>
+
+    <select id="searchEssayTitleList" parameterType="java.lang.String" resultType="Map">
+        select id,title label from essay where title like '%${info}%'
+    </select>
+
+</mapper>
