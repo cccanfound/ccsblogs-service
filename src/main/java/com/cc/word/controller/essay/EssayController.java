@@ -112,15 +112,6 @@ public class EssayController {
         return JsonData.buildSuccess("更新成功");
     }
 
-    @RequestMapping("getEssay")
-    public JsonData getEssay(@RequestBody Map<String,String> Params) {
-
-        Essay essay = essayService.essayList(Integer.parseInt(Params.get("essayId")));
-        if(essay == null){
-            return JsonData.buildFail("失败。请联系管理员");
-        }
-        return JsonData.buildSuccess(essay);
-    }
 
     @RequestMapping("delEssay")
     public JsonData delEssay(HttpServletRequest request, @RequestBody Map<String,Object> Params) {
