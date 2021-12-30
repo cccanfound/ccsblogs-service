@@ -27,7 +27,8 @@
 		SET
 		TITLE = #{title},
 		CONTENT = #{content},
-		TYPE = #{type}
+		TYPE = #{type},
+		PICTURE = #{picture}
 		where id = #{id}
     </update>
 

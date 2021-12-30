@@ -27,9 +27,8 @@
     <select id="searchWords" parameterType="map" resultType="map">
         SELECT id,content word,phonetic,wordtype,explaination
         FROM word
-        where  id=#{info}
-        /*WHERE content like '%${info}%'
-        or explaination like '%${info}%'*/
+        WHERE content like CONCAT('%',#{info},'%')
+        or explaination like CONCAT('%',#{info},'%')
         ORDER BY id
     </select>
 

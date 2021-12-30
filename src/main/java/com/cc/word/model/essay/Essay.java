@@ -9,6 +9,7 @@ public class Essay {
     private Date createTime;
     private String content;
     private String type;
+    private String picture;
 
     public int getId() {
         return id;
@@ -58,6 +59,14 @@ public class Essay {
         this.type = type;
     }
 
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
     @Override
     public String toString() {
         return "Essay{" +
@@ -67,6 +76,7 @@ public class Essay {
                 ", createTime=" + createTime +
                 ", content='" + content + '\'' +
                 ", type='" + type + '\'' +
+                ", picture='" + picture + '\'' +
                 '}';
     }
 }

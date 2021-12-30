@@ -73,6 +73,7 @@ public class EssayController {
         essay.setTitle(Params.get("title"));
         essay.setContent(Params.get("content"));
         essay.setType(Params.get("type"));
+        essay.setPicture(Params.get("picture"));
         JsonData data = essayService.updateEssay(essay);
         return data;
     }

@@ -181,7 +181,7 @@ public class WordController {
         if (userId == null || name == null) {
             return JsonData.buildFail("查询失败");
         }
-        if(!name.equals("username")  &&!name.equals("Lila")){
+        if(!name.equals("cc")  &&!name.equals("Lila")){
             return JsonData.buildFail("没有修改权限,请联系管理员修改");
         }
         //校验参数

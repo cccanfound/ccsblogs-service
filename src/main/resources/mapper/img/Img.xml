@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cc.word.dao.img.ImgDao">
+    <update id="updateFileName" >
+        UPDATE essay
+		set CONTENT = replace(CONTENT,#{oldName},#{newName}) where CONTENT like '%${oldName}%';
+    </update>
+
+
+    <insert id="addSyncFilesLog" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sync_files_log(TYPE,TOTAL,SUCCESS,FAIL,TIME)
+        VALUES (#{type},#{total},#{success},#{fail},#{time})
+    </insert>
+
+    <update id="updateSyncFilesLog" >
+        UPDATE sync_files_log
+        <if test="successOrFail=='success'.toString()">
+		    set success=success+1
+        </if>
+        <if test="successOrFail=='fail'.toString()">
+            set fail=fail+1
+        </if>
+        where id=#{id}
+    </update>
+</mapper>

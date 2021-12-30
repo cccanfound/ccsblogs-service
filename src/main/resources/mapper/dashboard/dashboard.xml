@@ -3,7 +3,7 @@
 <mapper namespace="com.cc.word.dao.dashboard.DashboardDao">
 
     <select id="selectDashboardList" parameterType="map" resultType="map">
-        SELECT essay.id id,user.username,title,DATE_FORMAT(essay.create_time,'%m-%d-%Y') create_time
+        SELECT essay.id id,user.username,title,DATE_FORMAT(essay.create_time,'%m-%d-%Y') create_time,essay.picture
         FROM essay
         LEFT JOIN user on user.id = essay.author_id
         where type = '1'
