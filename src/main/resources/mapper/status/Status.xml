@@ -7,4 +7,109 @@
         select id,name from status_group
     </select>
 
+    <select id="getAllStatusDef"  resultType="Map" >
+        select id,name from status_def
+    </select>
+
+    <select id="getGroupDefRelation"  resultType="Map" parameterType="java.lang.String">
+        select relation.id,relation.def_id,def.name
+        from status_group_def_relation relation
+        left join status_def def on relation.def_id = def.id
+        where 1=1
+        <if test="groupId != null and groupId != '' ">
+            and relation.group_id = #{groupId}
+        </if>
+    </select>
+
+    <insert id="saveGroupDefRelation" useGeneratedKeys="true">
+        INSERT INTO status_group_def_relation(GROUP_ID,DEF_ID)
+        VALUES (#{groupId},#{defId})
+    </insert>
+
+    <delete id="deleteGroupDefRelation" parameterType="Map">
+		delete from status_group_def_relation where GROUP_ID=#{groupId} and DEF_ID=#{defId}
+	</delete>
+
+    <insert id="saveStatusDef" useGeneratedKeys="true">
+        INSERT INTO status_def(NAME,UNIT,FLOOR,CEILING,DANGER)
+        VALUES (#{param.name},#{param.unit},#{param.floor},#{param.ceiling},#{param.danger})
+    </insert>
+
+    <select id="getStatusDefInfo"  resultType="Map" parameterType="java.lang.String">
+        select id,name,unit,floor,ceiling,danger from status_def where id=#{defId}
+    </select>
+
+    <update id="updateStatusDef" >
+        UPDATE status_def
+		SET
+		NAME = #{param.name},
+		UNIT = #{param.unit},
+		FLOOR = #{param.floor},
+		CEILING = #{param.ceiling},
+		DANGER = #{param.danger}
+		where id = #{param.id}
+    </update>
+
+    <select id="getStatusInfoOfSingleDef"  resultType="Map" parameterType="java.lang.String">
+        select info.id infoId,def.name name,def.unit,def.floor,def.ceiling,info.val,
+        DATE_FORMAT(info.create_time,'%Y-%m-%d') createTime ,info.remark,info.danger,location.id locationId,location.name locationName
+        from status_def def
+        left join status_info info on def.id=info.status_id
+        left join status_location location on location.id = info.location_id
+        where def.id=#{defId}
+    </select>
+
+    <insert id="saveStatusInfo" useGeneratedKeys="true">
+        INSERT INTO status_info(status_id,val,create_time,location_id,remark,danger)
+        VALUES (#{param.status_id},#{param.val},#{param.create_time},#{param.location_id},#{param.remark},#{param.danger})
+    </insert>
+
+    <update id="updateStatusInfo" >
+        UPDATE status_info
+		SET
+		status_id = #{param.status_id},
+		val = #{param.val},
+		create_time = #{param.create_time},
+		location_id = #{param.location_id},
+		remark = #{param.remark},
+		danger = #{param.danger}
+		where id = #{param.id}
+    </update>
+
+    <delete id="deleteStatusInfo" parameterType="java.lang.String">
+        delete from status_info where id = #{id}
+    </delete>
+
+    <select id="getLocation"  resultType="Map" >
+        select id,name,address from status_location
+    </select>
+
+    <select id="getStatusIndex"  resultType="Map" parameterType="java.lang.String">
+        select def.id defId,info.id infoId,def.name name,def.unit,def.floor,def.ceiling,info.val,
+        DATE_FORMAT(info.create_time,'%Y-%m-%d') createTime ,info.remark,info.danger,location.id locationId,location.name locationName
+        from status_group g
+        left join status_group_def_relation r on g.id = r.group_id
+        left join status_def def on def.id = r.def_id
+        left join status_info info on def.id=info.status_id
+        left join status_location location on location.id = info.location_id
+        where 1=1
+        <if test="groupId != null and groupId != '' ">
+            and g.id=#{groupId}
+        </if>
+        <if test="defId != null and defId != '' ">
+            and def.id=#{defId}
+        </if>
+        <choose>
+            <when test="dangerId !=null and dangerId == '-1'.toString ">
+                and (info.danger='1' or info.danger='2')
+            </when >
+            <when test="dangerId != null and dangerId != '' ">
+                and info.danger=#{dangerId}
+            </when >
+        </choose>
+        <if test="locationId != null and locationId != '' ">
+            and location.id=#{locationId}
+        </if>
+        order by def.id,createTime
+    </select>
 </mapper>

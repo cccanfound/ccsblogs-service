@@ -6,16 +6,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * 异常处理类
  */
-@ControllerAdvice
-public class WordExceptionHandler {
+@RestControllerAdvice
+public class GlobalExceptionHandler {
 
-    private final static Logger logger= LoggerFactory.getLogger(WordExceptionHandler.class);
+    private final static Logger logger= LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(value=Exception.class)
+    @ExceptionHandler(Exception.class)
     @ResponseBody
     public JsonData handler(Exception e){
 
