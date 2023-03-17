@@ -1,9 +1,7 @@
 package com.cc.word.controller.word;
 
-import com.cc.word.controller.user.UserController;
 import com.cc.word.model.common.ReturnCode;
 import com.cc.word.model.common.ReturnResult;
-import com.cc.word.service.user.UserService;
 import com.cc.word.service.word.WordService;
 import com.cc.word.utils.BaseUtil;
 import com.cc.word.utils.JsonData;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -8,10 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
@@ -30,11 +27,12 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2020/10/21 17:33
  */
 @RestController
-@RequestMapping("api/v1/pub/img")
+@RequestMapping("api/v1/pri/img")
 public class ImgController {
 
-    @Value("${prop.upload-img-folder}")
-    private String UPLOAD_IMG_FOLDER;
+    @Value("${prop.upload-img-essay-folder}")
+    private String UPLOAD_IMG_ESSAY_FOLDER;
+
 
     @Resource
     private FileDfsUtil fileDfsUtil ;
@@ -42,9 +40,9 @@ public class ImgController {
     private ImgService imgService;
 
 
-    //向tomcat中直接存入静态文件，现已停用，改用uploadFile，向fastDFS上传文件
-    @RequestMapping("upload")
-    public Map upload(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
+    //向tomcat中直接存入静态文件
+    @RequestMapping("uploadEssayImg")
+    public Map uploadEssayImg(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
         Map map = new HashMap();
         if (file.isEmpty()) {
             map.put("error","文件上传失败");
@@ -52,7 +50,7 @@ public class ImgController {
         }
         String fileName = file.getOriginalFilename();  // 文件名
         String suffixName = fileName.substring(fileName.lastIndexOf("."));  // 后缀名
-        String filePath = UPLOAD_IMG_FOLDER;
+        String filePath = UPLOAD_IMG_ESSAY_FOLDER;
         fileName = UUID.randomUUID() + suffixName; // 新文件名
         File dest = new File(filePath + fileName);
         if (!dest.getParentFile().exists()) {
@@ -67,7 +65,11 @@ public class ImgController {
         map.put("location",fileName);
         return map;
     }
-    @RequestMapping("uploadFile")
+
+
+    //现已停用，改用uploadEssayImg
+    //此方法为向fastDFS上传数据，但试验结果fastDFS移植起来很麻烦，而且无法手动添加文件，最终还是采用了传统静态文件上传
+    @RequestMapping("uploadFileFastDFS")
     public Map uploadFile(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
         Map map = new HashMap();
         if (file.isEmpty()) {
@@ -96,7 +98,7 @@ public class ImgController {
      * 文件删除
      * 待补充
      */
-    @RequestMapping(value = "/deleteByPath", method = RequestMethod.GET)
+    @RequestMapping(value = "/deleteByPathFastDFS", method = RequestMethod.GET)
     public Map deleteByPath (){
         Map map = new HashMap();
         String filePathName = "group1/M00/00/00/wKjObV9Iy-mAZIE9AACGWRCnSVA093.jpg" ;

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cc.word.dao.music.MusicDao">
+
+    <select id="getSingersName" parameterType="map" resultType="map">
+        select id,singer_name value from singer where singer_name like CONCAT('%',#{singerName},'%')
+        <if test="count != null and count != '' ">
+            limit #{count}
+        </if>
+    </select>
+
+    <insert id="saveMusic" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO music(MUSIC_NAME,SINGER_ID,CREATE_TIME,EDIT_USERID)
+        VALUES (#{musicName},#{singerId},#{createTime},#{editUserId})
+    </insert>
+
+    <update id="updateMusic">
+        UPDATE music
+		SET
+        <if test="describe != null and describe != '' ">
+		DESCRIBE = #{describe},
+        </if>
+        <if test="musicImg != null and musicImg != '' ">
+		MUSIC_IMG = #{musicImg},
+        </if>
+        <if test="editUserId != null and editUserId != '' ">
+		EDIT_USERID = #{editUserId},
+        </if>
+        <if test="musicUrl != null and musicUrl != '' ">
+		MUSIC_URL = #{musicUrl},
+        </if>
+        <if test="lyricUrl != null and lyricUrl != '' ">
+		LYRIC_URL = #{lyricUrl},
+        </if>
+        <if test="musicName != null and musicName != '' ">
+        MUSIC_NAME = #{musicName},
+        </if>
+        <if test="singerId != null and singerId != '' ">
+        SINGER_ID = #{singerId},
+        </if>
+        EDIT_TIME = #{editTime}
+		where id = #{id}
+    </update>
+
+    <update id="delImgUrl" parameterType="String">
+        UPDATE music
+        SET
+        MUSIC_IMG = '',
+        EDIT_TIME = now()
+        where id = #{id}
+    </update>
+
+    <select id="getMusicList" parameterType="map" resultType="map">
+        SELECT
+        music.id id,
+        music_name musicName,
+        singer_name singerName,
+        music.edit_userid editUserId,
+        DATE_FORMAT(music.create_time, '%Y-%m-%d') createTime,
+        DATE_FORMAT(music.edit_time, '%Y-%m-%d') editTime
+        FROM
+        music
+        LEFT JOIN singer on music.singer_id=singer.id
+        <choose>
+            <when test="searchInfo !=null and searchInfo != ''">
+                WHERE
+                music_name like CONCAT('%',#{searchInfo},'%')
+                or
+                singer_name like CONCAT('%',#{searchInfo},'%')
+            </when>
+            <otherwise>
+                order by music.create_time desc
+            </otherwise>
+        </choose>
+        <if test="count != null and count != '' ">
+            limit #{count}
+        </if>
+    </select>
+
+    <select id="getMusicInfoById" parameterType="String" resultType="com.cc.word.model.music.Music">
+        SELECT
+        music.id id,
+        music_name musicName,
+        singer.id singerId,
+        singer_name singerName,
+        music.music_img musicImg,
+        music.music_url musicUrl,
+        music.lyric_url lyricUrl
+        FROM
+            music
+        LEFT JOIN singer on music.singer_id=singer.id
+        where music.id = #{musicId}
+    </select>
+</mapper>

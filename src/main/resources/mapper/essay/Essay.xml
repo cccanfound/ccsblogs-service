@@ -37,7 +37,7 @@
 	</delete>
 
     <select id="searchEssayTitleList" parameterType="java.lang.String" resultType="Map">
-        select id,title label from essay where title like '%${info}%'
+        select id,title label from essay where title like CONCAT('%',#{info},'%')
     </select>
 
 </mapper>

@@ -19,6 +19,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class InterceptorConfig implements WebMvcConfigurer {
     @Value("${prop.upload-img-folder}")
     private String UPLOAD_IMG_FOLDER;
+
+    @Value("${prop.upload-music-folder}")
+    private String UPLOAD_MUSIC_FOLDER;
+
     @Bean
     LoginInterceptor loginInterceptor(){
         return new LoginInterceptor();
@@ -48,6 +52,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/img/**").addResourceLocations("file:"+UPLOAD_IMG_FOLDER);
+        registry.addResourceHandler("/music/**").addResourceLocations("file:"+UPLOAD_MUSIC_FOLDER);
         registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
     }
 }

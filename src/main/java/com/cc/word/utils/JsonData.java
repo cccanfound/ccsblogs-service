@@ -44,6 +44,9 @@ public class JsonData {
     public static JsonData buildSuccess(Object data){
         return new JsonData(0,data,"success");
     }
+    public static JsonData buildSuccess(){
+        return new JsonData(0,"success");
+    }
     public static JsonData buildFail(String msg){
         return new JsonData(-1,"",msg);
     }
